@@ -4,7 +4,10 @@ gameArea.width = 1500;
 gameArea.height = 700;
 
 var points = document.createTextNode(0);
-document.getElementById("points").appendChild(points);
+document.getElementById("pointsDiv").appendChild(points);
+
+var highscore = document.createTextNode(0);
+document.getElementById("highscoreDiv").appendChild(highscore);
 
 var context = gameArea.getContext("2d");
 document.getElementById("content").appendChild(gameArea);
@@ -13,7 +16,7 @@ var elemWidth = 20;
 var elemHeight = 20;
 
 var snake = null;
-var apples = {};
+var apples;
 
 var updateInterval;
 
@@ -146,7 +149,7 @@ function update(){
     if (snake.head.x >= gameArea.width || snake.head.x < 0 
             || snake.head.y >= gameArea.height || snake.head.y < 0
             || snake.isCellTaken(snake.head.x, snake.head.y)){
-       clearInterval(updateInterval);
+       gameOver();
        return;
     }
     
@@ -183,11 +186,18 @@ function manageApples(){
 }
 
 
-
-function setUp(){
-    snake = new Snake("blue");
-    updateInterval = setInterval(update, 80);
+function gameOver(){
+    clearInterval(updateInterval);
+    if (parseInt(points.textContent) > (highscore.textContent))
+        highscore.textContent = points.textContent;
+    points.textContent = 0;
 }
 
 
-setUp();
+
+function setUp(){
+    context.clearRect(0, 0, gameArea.width, gameArea.height);
+    apples = {};
+    snake = new Snake("blue");
+    updateInterval = setInterval(update, 80);
+}
