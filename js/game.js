@@ -188,12 +188,14 @@ function update(){
 }
 
 
+
 function manageCasePoints(lat, long, cases){
     let x = Math.round((Math.abs(-180-long)*(gameArea.width/360))/elemWidth)*elemWidth;
     let y = Math.round(((90-lat)*(gameArea.height/180))/elemHeight)*elemHeight;
     
     apples[[x, y]] = (new Apple(x, y, elemWidth, elemHeight, "red", cases));
 }
+
 
 
 
@@ -208,9 +210,10 @@ function setUpRound(){
     day.innerHTML = dates[currentDayIndex];
     let locations = getLocationsFromDay(dates[currentDayIndex]);
     locations.forEach(function(location){
-        manageCasePoints(location.lat, location.long, location.cases[dates[0]]);
+        manageCasePoints(location.lat, location.long, location.cases[dates[currentDayIndex]]);
     });
 }
+
 
 
 function gameOver(){

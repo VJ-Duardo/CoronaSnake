@@ -42,7 +42,7 @@ function createObjectsAndDates(csvText){
             continue;
         lineElems = line.split(",");
         let state = typeof lineElems[0] === 'undefined' ? "" : lineElems[0];
-        let newLocation = new Location(state, lineElems[1], parseInt(lineElems[2]), parseInt(lineElems[3]));
+        let newLocation = new Location(state, lineElems[1], Math.round(lineElems[2]), Math.round(lineElems[3]));
         for (let i = 4; i < lineElems.length; i++){
             newLocation.addDay(headLine[i], parseInt(lineElems[i]));
         }
@@ -53,7 +53,6 @@ function createObjectsAndDates(csvText){
 
 
 function getLocationsFromDay(date){
-    console.log(locations);
     let currentLocations = [];
     for (const loc of locations){
         if (loc.cases[date] !== 0){
