@@ -1,19 +1,22 @@
-var gameArea = document.getElementById("gameArea")
-gameArea.style = "border:1px solid #000000;";
-gameArea.width = 1500;
-gameArea.height = 700;
+var gameArea = document.getElementById("gameArea");
+gameArea.width = 1440;
+gameArea.height = 720;
 
-var points = document.createTextNode(0);
-document.getElementById("pointsDiv").appendChild(points);
+var points = document.getElementById("points");
+points.innerHTML = 0;
 
-var highscore = document.createTextNode(0);
-document.getElementById("highscoreDiv").appendChild(highscore);
+var highscore = document.getElementById("highscore");
+highscore.innerHTML = 0;
 
 var context = gameArea.getContext("2d");
 document.getElementById("content").appendChild(gameArea);
 
-var elemWidth = 20;
-var elemHeight = 20;
+var startScreen = document.getElementById("start");
+var gameOverScreen = document.getElementById("gameOver");
+
+
+var elemWidth = 5;
+var elemHeight = 5;
 
 var snake = null;
 var apples;
@@ -59,7 +62,7 @@ class Apple extends Cell{
     
     hitApple(x, y){
         if (this.x === x && this.y === y){
-            points.textContent = parseInt(points.textContent) + this.points;
+            points.innerHTML = parseInt(points.innerHTML) + this.points;
             delete apples[[x, y]];
             delete this;
             return true;
@@ -187,17 +190,21 @@ function manageApples(){
 
 
 function gameOver(){
+    gameOverScreen.style.display = "block";
     clearInterval(updateInterval);
-    if (parseInt(points.textContent) > (highscore.textContent))
-        highscore.textContent = points.textContent;
-    points.textContent = 0;
+    if (parseInt(points.innerHTML) > (highscore.innerHTML))
+        highscore.innerHTML = points.innerHTML;
 }
 
 
 
 function setUp(){
+    startScreen.style.display = "none";
+    gameOverScreen.style.display = "none";
+    clearInterval(updateInterval);
+    points.textContent = 0;
     context.clearRect(0, 0, gameArea.width, gameArea.height);
     apples = {};
-    snake = new Snake("blue");
-    updateInterval = setInterval(update, 80);
+    snake = new Snake("yellow");
+    updateInterval = setInterval(update, 50);
 }

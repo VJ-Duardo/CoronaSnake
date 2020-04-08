@@ -9,19 +9,31 @@
     <body>
         <h1> Snake </h1>
         <div id="content">
-            <div id="pointsDiv">
-                Points:
-            </div>
-            
-            <div id="highscoreDiv">
-                Highscore: 
+            <div id="status">
+                <table>
+                    <tr>
+                        <td>Highscore: </td>
+                        <td><b id="highscore"></b></td>
+                    </tr>
+                    <tr>
+                        <td>Score: </td>
+                        <td><b id="points"></b></td>
+                    </tr>
+                </table>
             </div>
             
             <canvas id="gameArea">
             </canvas>
             
             <div id="start">
-                 <button onclick="setUp()">Start</button>
+                <button onclick="setUp()">Start</button>
+            </div>
+            
+            <div id="gameOver" style="display: none">
+                <div>
+                    <b>Game Over!</b> <br>
+                    <button onclick="setUp()">Restart</button>
+                </div>
             </div>
         </div>    
         <footer>

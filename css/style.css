@@ -1,0 +1,96 @@
+html {
+    margin-left: 50px;
+    color: WhiteSmoke;
+    background-color: dimgray;
+}
+
+body {
+    font-family: arial, helvetica, sans-serif;
+    overflow-y: hidden;
+}
+
+#content {
+    display: grid;
+}
+
+#gameArea, #start, #status, #gameOver {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+
+#gameArea {
+    position: relative;
+    z-index: 1;
+    border: 1px solid #000000;
+    background: url('../earth.jpg');
+    background-size: 1440px 720px;
+}
+
+
+#status {
+    z-index: 2;
+}
+
+
+
+
+#start, #gameOver {
+    position: relative;
+    z-index: 3;
+    background: rgba(230,230,230,0.3);
+    width: 1442px;
+    height: 722px;
+}
+
+#start button{
+    background-color: #f44336;
+    border-radius: 8px;
+    border: none;
+    position: relative;
+    font-size: 20px;
+    left: 50%;
+    top: 50%;
+}
+
+
+
+
+
+#gameOver div {
+    position: relative;
+    left: 50%;
+    top: 50%;
+}
+
+#gameOver div b {
+    font-size: 20px;
+}
+
+#gameOver div button {
+    background-color: #f44336;
+    border-radius: 8px;
+    border: none;
+    position: relative;
+    font-size: 20px;
+}
+
+
+
+
+
+footer {
+    display: flex;
+    flex-direction: row;
+    bottom:0px;
+    left: 0px;
+    right: 0px;
+    background:rgba(230,230,230,0.5);
+    color: black;
+
+}
+
+footer p {
+    margin-left: 50px;
+    
+}
