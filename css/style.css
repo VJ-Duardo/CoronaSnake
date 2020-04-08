@@ -53,6 +53,13 @@ body {
     top: 50%;
 }
 
+#loading {
+    position: relative;
+    left: 50%;
+    top: 50%;
+    color: red;
+}
+
 
 
 

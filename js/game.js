@@ -2,21 +2,26 @@ var gameArea = document.getElementById("gameArea");
 gameArea.width = 1440;
 gameArea.height = 720;
 
-var points = document.getElementById("points");
+var points = document.getElementById("cases");
 points.innerHTML = 0;
 
-var highscore = document.getElementById("highscore");
-highscore.innerHTML = 0;
+var day = document.getElementById("day");
+day.innerHTML = "-";
 
 var context = gameArea.getContext("2d");
 document.getElementById("content").appendChild(gameArea);
 
 var startScreen = document.getElementById("start");
+var startButton = document.getElementById("startButton");
+var loadingMessage = document.getElementById("loading");
 var gameOverScreen = document.getElementById("gameOver");
 
 
 var elemWidth = 5;
 var elemHeight = 5;
+
+var dates;
+var currentDayIndex = 0;
 
 var snake = null;
 var apples;
@@ -24,12 +29,21 @@ var apples;
 var updateInterval;
 
 var turnDone = false;
-setData();
+
+
+getData()
+    .then((days) => {
+        loadingMessage.style.display = "none";
+        startButton.style.display = "block";
+        dates = days;
+});
 
 
 document.addEventListener("keyup", function(event) {
     processInput(event.keyCode);
 });
+
+
 
 
 
@@ -156,54 +170,65 @@ function update(){
        return;
     }
     
-    manageApples();
+    if (Object.values(apples).length <= 0){
+        setUpRound();
+    }
     
+    let found = false;
     for (let apple of Object.values(apples)){
-        if (apple.hitApple(snake.head.x, snake.head.y)){
-            return;
+        for (let bodyPart of snake.body){
+            if (apple.hitApple(bodyPart.x, bodyPart.y)){
+                found = true;
+            }
         }
     }
     
-    snake.popTail();
+    if (!found)
+        snake.popTail();
 }
 
 
-function manageApples(){
-    if (Math.random() >= 0.03 || Object.values(apples).length > 1){
-        return;
-    }
+function manageCasePoints(lat, long, cases){
+    let x = Math.round((Math.abs(-180-long)*(gameArea.width/360))/elemWidth)*elemWidth;
+    let y = Math.round(((90-lat)*(gameArea.height/180))/elemHeight)*elemHeight;
     
-    setApple();
-    function setApple(){
-        let x = (Math.floor(Math.random() * (gameArea.width/elemWidth))*elemWidth);
-        let y = (Math.floor(Math.random() * (gameArea.height/elemHeight))*elemHeight);
-        
-        if (!snake.isCellTaken(x, y) 
-                && snake.head.x !== x && snake.head.y !== y
-                && !apples.hasOwnProperty([x, y])){
-            apples[[x, y]] = (new Apple(x, y, elemWidth, elemHeight, "red", 1));
-        } else {
-            setApple();
-        }
+    apples[[x, y]] = (new Apple(x, y, elemWidth, elemHeight, "red", cases));
+}
+
+
+
+function setUpRound(){
+    console.log(dates);
+    if (currentDayIndex >= dates.length){
+        console.log("you won");
+        clearInterval(updateInterval);
+        return;
+    } else {
+        currentDayIndex++;
     }
+    day.innerHTML = dates[currentDayIndex];
+    let locations = getLocationsFromDay(dates[currentDayIndex]);
+    locations.forEach(function(location){
+        manageCasePoints(location.lat, location.long, location.cases[dates[0]]);
+    });
 }
 
 
 function gameOver(){
     gameOverScreen.style.display = "block";
     clearInterval(updateInterval);
-    if (parseInt(points.innerHTML) > (highscore.innerHTML))
-        highscore.innerHTML = points.innerHTML;
 }
 
 
 
-function setUp(){
+function setUpGame(){
+    clearInterval(updateInterval);
+    context.clearRect(0, 0, gameArea.width, gameArea.height);
     startScreen.style.display = "none";
     gameOverScreen.style.display = "none";
-    clearInterval(updateInterval);
-    points.textContent = 0;
-    context.clearRect(0, 0, gameArea.width, gameArea.height);
+    points.innerHTML = 0;
+    day.innerHTML = "-";
+    currentDayIndex = 0;
     apples = {};
     snake = new Snake("yellow");
     updateInterval = setInterval(update, 50);

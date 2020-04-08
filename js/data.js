@@ -1,6 +1,4 @@
-
 var locations = [];
-var dates;
 
 class Location{
     constructor(state, country, lat, long){
@@ -19,13 +17,13 @@ class Location{
 
 
 
-function setData(){
+function getData(){
     let url = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv';
-    fetch(url)
+    return fetch(url)
         .then(function(response) {
-            response.text().then(function(text) {
-                createObjects(text);
-                return;
+            return response.text()
+                .then(function(text) {
+                    return createObjectsAndDates(text);
             });
         })
         .catch(function(err) {
@@ -34,18 +32,33 @@ function setData(){
 }
 
 
-function createObjects(csvText){
+function createObjectsAndDates(csvText){
+    csvText = csvText.replace(/\".*\"/, "");
     let lines = csvText.split("\n");
     let headLine = lines[0].split(",");
-    dates = headLine.slice(3, headLine);
     
     for (let line of lines.slice(1)){
+        if (typeof line === 'undefined' || line === "")
+            continue;
         lineElems = line.split(",");
         let state = typeof lineElems[0] === 'undefined' ? "" : lineElems[0];
-        let newLocation = new Location(state, lineElems[1], lineElems[2], lineElems[3]);
+        let newLocation = new Location(state, lineElems[1], parseInt(lineElems[2]), parseInt(lineElems[3]));
         for (let i = 4; i < lineElems.length; i++){
-            newLocation.addDay(headLine[i], lineElems[i]);
+            newLocation.addDay(headLine[i], parseInt(lineElems[i]));
         }
         locations.push(newLocation);
     }
+    return headLine.slice(4);
+}
+
+
+function getLocationsFromDay(date){
+    console.log(locations);
+    let currentLocations = [];
+    for (const loc of locations){
+        if (loc.cases[date] !== 0){
+            currentLocations.push(loc);
+        }
+    }
+    return currentLocations;
 }
