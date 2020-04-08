@@ -92,7 +92,7 @@ class Snake{
         this.color = color;
         this.direction = "east";
         
-        this.head = new Cell(elemWidth*2, elemHeight*2, elemWidth, elemHeight, this.color);
+        this.head = new Cell(gameArea.width/2, gameArea.height/2, elemWidth, elemHeight, this.color);
         this.body = [this.head];       
     }
     
@@ -140,6 +140,7 @@ function processInput(keyCode){
             break;
     }
 }
+
 
 
 function update(){
@@ -195,7 +196,6 @@ function manageCasePoints(lat, long, cases){
     
     apples[[x, y]] = (new Apple(x, y, elemWidth, elemHeight, "red", cases));
 }
-
 
 
 

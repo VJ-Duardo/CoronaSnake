@@ -35,6 +35,8 @@ h1{
 
 
 #status {
+    font-size: 22px;
+    color: white;
     z-index: 2;
 }
 
