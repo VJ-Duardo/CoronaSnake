@@ -9,6 +9,12 @@ body {
     overflow-y: hidden;
 }
 
+
+h1{
+  margin-bottom: 0px;
+}
+
+
 #content {
     display: grid;
 }
@@ -80,24 +86,4 @@ body {
     border: none;
     position: relative;
     font-size: 20px;
-}
-
-
-
-
-
-footer {
-    display: flex;
-    flex-direction: row;
-    bottom:0px;
-    left: 0px;
-    right: 0px;
-    background:rgba(230,230,230,0.5);
-    color: black;
-
-}
-
-footer p {
-    margin-left: 50px;
-    
 }

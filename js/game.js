@@ -198,7 +198,6 @@ function manageCasePoints(lat, long, cases){
 
 
 function setUpRound(){
-    console.log(dates);
     if (currentDayIndex >= dates.length){
         console.log("you won");
         clearInterval(updateInterval);
