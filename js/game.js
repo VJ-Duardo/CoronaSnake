@@ -24,7 +24,7 @@ var apples;
 var updateInterval;
 
 var turnDone = false;
-
+setData();
 
 
 document.addEventListener("keyup", function(event) {
