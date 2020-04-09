@@ -17,8 +17,8 @@ var loadingMessage = document.getElementById("loading");
 var gameOverScreen = document.getElementById("gameOver");
 
 
-var elemWidth = 5;
-var elemHeight = 5;
+var elemWidth = 6;
+var elemHeight = 6;
 
 var dates;
 var currentDayIndex = 0;
@@ -84,20 +84,54 @@ class Apple extends Cell{
             return false;
         }
     }
+    
+    colorCell(color){
+        context.beginPath();
+        context.arc(this.x+(elemWidth/2), this.y+(elemHeight/2), Math.floor(this.width/2), 0, 2 * Math.PI);
+        context.fillStyle = color;
+        context.fill();
+        context.lineWidth = 0.1;
+        context.stroke();
+    }
 }
 
 
 class Snake{
-    constructor(color){
-        this.color = color;
+    constructor(headColor){
+        this.bodyColor = {
+            color: [0, 0, 0],
+            currIndex: 1,
+            end: 255,
+            step: 1
+        };
+        this.headColor = headColor;
         this.direction = "east";
         
-        this.head = new Cell(gameArea.width/2, gameArea.height/2, elemWidth, elemHeight, this.color);
+        this.head = new Cell(gameArea.width/2, gameArea.height/2, elemWidth, elemHeight, this.headColor);
         this.body = [this.head];       
     }
     
+    getNextColor(){
+        let colorObj = this.bodyColor;
+        if (colorObj.color[colorObj.currIndex] === colorObj.end){
+            colorObj.currIndex = Math.floor(Math.random() * colorObj.color.length);
+            colorObj.end = (colorObj.color[colorObj.currIndex] === 0) ? 255 : 0;
+            colorObj.step = (colorObj.color[colorObj.currIndex] === 0) ? 1 : -1;
+        } else {
+            colorObj.color[colorObj.currIndex]+= colorObj.step;
+        }
+        
+        let resultColor = '#';
+        colorObj.color.map(function(colVal){
+            let colHex = colVal.toString(16);
+            resultColor += (colHex.length < 2) ? '0'+colHex : colHex;
+        });
+        return resultColor;
+    }
+    
     insertNewHead(x, y){
-        let newHead = new Cell(x, y, elemWidth, elemHeight, this.color);
+        this.head.colorCell(this.getNextColor());
+        let newHead = new Cell(x, y, elemWidth, elemHeight, this.headColor);
         this.head = newHead;
         this.body.unshift(newHead);
     }

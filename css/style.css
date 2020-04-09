@@ -73,6 +73,7 @@ h1{
 
 
 #gameOver div {
+    color: black;
     position: relative;
     left: 50%;
     top: 50%;
