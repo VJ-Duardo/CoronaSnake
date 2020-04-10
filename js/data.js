@@ -10,8 +10,11 @@ class Location{
     }
     
     
-    addDay(date, caseNumber){
-        this.cases[date] = caseNumber;
+    addDay(date, difference, caseNumber){
+        this.cases[date] = {
+            difference: difference,
+            caseNumber: caseNumber
+        };
     }
 }
 
@@ -33,7 +36,7 @@ function getData(){
 
 
 function createObjectsAndDates(csvText){
-    csvText = csvText.replace(/\".*\"/, "");
+    csvText = removeDisruptingCommas(csvText);
     let lines = csvText.split("\n");
     let headLine = lines[0].split(",");
     
@@ -43,8 +46,11 @@ function createObjectsAndDates(csvText){
         lineElems = line.split(",");
         let state = typeof lineElems[0] === 'undefined' ? "" : lineElems[0];
         let newLocation = new Location(state, lineElems[1], Math.round(lineElems[2]), Math.round(lineElems[3]));
-        for (let i = 4; i < lineElems.length; i++){
-            newLocation.addDay(headLine[i], parseInt(lineElems[i]));
+        
+        newLocation.addDay(headLine[4], parseInt(lineElems[4]), parseInt(lineElems[4]));
+        for (let i = 4+1; i < lineElems.length; i++){
+            difference = parseInt(lineElems[i])-parseInt(lineElems[i-1]);
+            newLocation.addDay(headLine[i], difference, parseInt(lineElems[i]));
         }
         locations.push(newLocation);
     }
@@ -52,10 +58,29 @@ function createObjectsAndDates(csvText){
 }
 
 
+function removeDisruptingCommas(string){
+    let regex = /"([^",]+),([^"]+)"/;
+    let match;
+    while ((match = regex.exec(string)) !== null){
+        string = string.replace(match[0], match[1]+" "+match[2]);
+    }
+    return string;
+}
+
+
+function getCaseNumberAtDate(date){
+    let cases = 0;
+    for (const loc of locations){
+        cases+= loc.cases[date].caseNumber;
+    }
+    return cases;
+}
+
+
 function getLocationsFromDay(date){
     let currentLocations = [];
     for (const loc of locations){
-        if (loc.cases[date] !== 0){
+        if (loc.cases[date].difference > 0){
             currentLocations.push(loc);
         }
     }

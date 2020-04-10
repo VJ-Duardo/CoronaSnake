@@ -117,10 +117,11 @@ class Snake{
 
 
 class GUI{
-    constructor(showGameOver, setDate, addCases, drawCircle, drawRect, clearRectCell){
+    constructor(showGameOver, setDate, addCases, setCases, drawCircle, drawRect, clearRectCell){
         this.showGameOver = showGameOver;
         this.setDate = setDate;
         this.addCases = addCases;
+        this.setCases = setCases;
         this.drawCircle = drawCircle;
         this.drawRect = drawRect;
         this.clearRectCell = clearRectCell;
@@ -203,14 +204,16 @@ function update(){
 
 
 function createCasePoints(lat, long, cases){
-    console.log(lat);
-    console.log(long);
+    if (isNaN(lat) || isNaN(long))
+        return;
     let x = Math.round((Math.abs(-180-long)*(fieldWidth/360))/elemWidth)*elemWidth;
     let y = Math.round(((90-lat)*(fieldHeight/180))/elemHeight)*elemHeight;
-    console.log(x);
-    console.log(y);
     
-    apples[[x, y]] = (new Apple(x, y, elemWidth, elemHeight, "red", cases)); 
+    if (apples.hasOwnProperty([x, y])){
+        apples[[x, y]].points+= cases; 
+    } else {
+        apples[[x, y]] = (new Apple(x, y, elemWidth, elemHeight, "red", cases)); 
+    }
 }
 
 
@@ -220,14 +223,18 @@ function setUpRound(){
         console.log("you won");
         clearInterval(updateInterval);
         return;
+    }
+    if (currentDayIndex === 0){
+        gui.setCases(0); 
     } else {
-        currentDayIndex++;
+        gui.setCases(getCaseNumberAtDate(dates[currentDayIndex-1]));
     }
     gui.setDate(dates[currentDayIndex]);
     let locations = getLocationsFromDay(dates[currentDayIndex]);
     locations.forEach(function(location){
-        createCasePoints(location.lat, location.long, location.cases[dates[currentDayIndex]]);
+        createCasePoints(location.lat, location.long, location.cases[dates[currentDayIndex]].difference);
     });
+    currentDayIndex++;
 }
 
 
@@ -256,6 +263,6 @@ function setUpGame(width, height, dayIndex, dateStrings){
 }
 
 
-function setGUIInterfaces(showGameOver, setDate, addCases, drawCircle, drawRect, clearRectCell){
-   gui = new GUI(showGameOver, setDate, addCases, drawCircle, drawRect, clearRectCell);
+function setGUIInterfaces(showGameOver, setDate, addCases, setCases, drawCircle, drawRect, clearRectCell){
+   gui = new GUI(showGameOver, setDate, addCases, setCases, drawCircle, drawRect, clearRectCell);
 }

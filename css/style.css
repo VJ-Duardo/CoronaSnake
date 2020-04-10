@@ -71,6 +71,13 @@ h1{
     color: red;
 }
 
+#overlay table {
+    font-size: 22px;
+    position: relative;
+    top: 20%;
+    color: black;
+}
+
 
 
 

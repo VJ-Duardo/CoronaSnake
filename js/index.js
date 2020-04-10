@@ -72,6 +72,10 @@ var addCases = function(cases){
     caseDisplay.innerHTML = parseInt(caseDisplay.innerHTML) + cases;
 };
 
+var setCases = function(cases){
+    caseDisplay.innerHTML = cases;
+}
+
 var drawCircle = function(x, y, r, color){
     context.beginPath();
     context.arc(x, y, r, 0, 2 * Math.PI);
@@ -90,4 +94,4 @@ var clearRectCell = function(x, y, width, height){
     context.clearRect(x, y, width, height);
 };
 
-setGUIInterfaces(showGameOver, setDate, addCases, drawCircle, drawRect, clearRectCell);
+setGUIInterfaces(showGameOver, setDate, addCases, setCases, drawCircle, drawRect, clearRectCell);
