@@ -1,49 +1,17 @@
-var gameArea = document.getElementById("gameArea");
-gameArea.width = 1440;
-gameArea.height = 720;
-
-var points = document.getElementById("cases");
-points.innerHTML = 0;
-
-var day = document.getElementById("day");
-day.innerHTML = "-";
-
-var context = gameArea.getContext("2d");
-document.getElementById("content").appendChild(gameArea);
-
-var startScreen = document.getElementById("start");
-var startButton = document.getElementById("startButton");
-var loadingMessage = document.getElementById("loading");
-var gameOverScreen = document.getElementById("gameOver");
-
-
+var fieldWidth;
+var fieldHeight;
+var dates;
+var currentDayIndex;
+var apples;
+var snake;
+        
 var elemWidth = 6;
 var elemHeight = 6;
 
-var dates;
-var currentDayIndex = 0;
-
-var snake = null;
-var apples;
-
+var turnDone = false;
 var updateInterval;
 
-var turnDone = false;
-
-
-getData()
-    .then((days) => {
-        loadingMessage.style.display = "none";
-        startButton.style.display = "block";
-        dates = days;
-});
-
-
-document.addEventListener("keyup", function(event) {
-    processInput(event.keyCode);
-});
-
-
+var gui;
 
 
 
@@ -58,12 +26,11 @@ class Cell{
     }
     
     colorCell(color){
-        context.fillStyle = color;
-        context.fillRect(this.x, this.y, this.width, this.height);
+        gui.drawRect(this.x, this.y, this.width, this.height, color);
     }
     
     clearCell(){
-        context.clearRect(this.x, this.y, this.width, this.height);
+        gui.clearRectCell(this.x, this.y, this.width, this.height);
     }
 }
 
@@ -76,7 +43,7 @@ class Apple extends Cell{
     
     hitApple(x, y){
         if (this.x === x && this.y === y){
-            points.innerHTML = parseInt(points.innerHTML) + this.points;
+            gui.addCases(this.points);
             delete apples[[x, y]];
             delete this;
             return true;
@@ -86,12 +53,7 @@ class Apple extends Cell{
     }
     
     colorCell(color){
-        context.beginPath();
-        context.arc(this.x+(elemWidth/2), this.y+(elemHeight/2), Math.floor(this.width/2), 0, 2 * Math.PI);
-        context.fillStyle = color;
-        context.fill();
-        context.lineWidth = 0.1;
-        context.stroke();
+         gui.drawCircle(this.x+(elemWidth/2), this.y+(elemHeight/2), Math.floor(this.width/2), color);
     }
 }
 
@@ -107,7 +69,7 @@ class Snake{
         this.headColor = headColor;
         this.direction = "east";
         
-        this.head = new Cell(gameArea.width/2, gameArea.height/2, elemWidth, elemHeight, this.headColor);
+        this.head = new Cell(fieldWidth/2, fieldHeight/2, elemWidth, elemHeight, this.headColor);
         this.body = [this.head];       
     }
     
@@ -146,7 +108,25 @@ class Snake{
         let cell = this.body.slice(1).find(elem => elem.x === x && elem.y === y);
         return (typeof cell !== 'undefined');
     }
+    
+    isOutOfBounds(x, y){
+        return (this.head.x >= x || this.head.x < 0 
+            || this.head.y >= y || this.head.y < 0);
+    }
 }
+
+
+class GUI{
+    constructor(showGameOver, setDate, addCases, drawCircle, drawRect, clearRectCell){
+        this.showGameOver = showGameOver;
+        this.setDate = setDate;
+        this.addCases = addCases;
+        this.drawCircle = drawCircle;
+        this.drawRect = drawRect;
+        this.clearRectCell = clearRectCell;
+    }
+}
+
 
 
 
@@ -198,9 +178,7 @@ function update(){
     
     snake.insertNewHead(snake.head.x+changeX, snake.head.y+changeY);
     
-    if (snake.head.x >= gameArea.width || snake.head.x < 0 
-            || snake.head.y >= gameArea.height || snake.head.y < 0
-            || snake.isCellTaken(snake.head.x, snake.head.y)){
+    if (checkGameOver()){
        gameOver();
        return;
     }
@@ -224,11 +202,15 @@ function update(){
 
 
 
-function manageCasePoints(lat, long, cases){
-    let x = Math.round((Math.abs(-180-long)*(gameArea.width/360))/elemWidth)*elemWidth;
-    let y = Math.round(((90-lat)*(gameArea.height/180))/elemHeight)*elemHeight;
+function createCasePoints(lat, long, cases){
+    console.log(lat);
+    console.log(long);
+    let x = Math.round((Math.abs(-180-long)*(fieldWidth/360))/elemWidth)*elemWidth;
+    let y = Math.round(((90-lat)*(fieldHeight/180))/elemHeight)*elemHeight;
+    console.log(x);
+    console.log(y);
     
-    apples[[x, y]] = (new Apple(x, y, elemWidth, elemHeight, "red", cases));
+    apples[[x, y]] = (new Apple(x, y, elemWidth, elemHeight, "red", cases)); 
 }
 
 
@@ -241,31 +223,39 @@ function setUpRound(){
     } else {
         currentDayIndex++;
     }
-    day.innerHTML = dates[currentDayIndex];
+    gui.setDate(dates[currentDayIndex]);
     let locations = getLocationsFromDay(dates[currentDayIndex]);
     locations.forEach(function(location){
-        manageCasePoints(location.lat, location.long, location.cases[dates[currentDayIndex]]);
+        createCasePoints(location.lat, location.long, location.cases[dates[currentDayIndex]]);
     });
 }
 
 
 
+function checkGameOver(){
+    return (snake.isOutOfBounds(fieldWidth, fieldHeight)
+            || snake.isCellTaken(snake.head.x, snake.head.y));
+}
+
+
 function gameOver(){
-    gameOverScreen.style.display = "block";
+    gui.showGameOver();
     clearInterval(updateInterval);
 }
 
 
 
-function setUpGame(){
-    clearInterval(updateInterval);
-    context.clearRect(0, 0, gameArea.width, gameArea.height);
-    startScreen.style.display = "none";
-    gameOverScreen.style.display = "none";
-    points.innerHTML = 0;
-    day.innerHTML = "-";
-    currentDayIndex = 0;
+function setUpGame(width, height, dayIndex, dateStrings){
+    fieldWidth = width;
+    fieldHeight = height;
+    dates = dateStrings;
+    currentDayIndex = dates.findIndex((date) => date === dayIndex);
     apples = {};
     snake = new Snake("yellow");
     updateInterval = setInterval(update, 50);
+}
+
+
+function setGUIInterfaces(showGameOver, setDate, addCases, drawCircle, drawRect, clearRectCell){
+   gui = new GUI(showGameOver, setDate, addCases, drawCircle, drawRect, clearRectCell);
 }

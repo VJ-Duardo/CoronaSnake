@@ -26,19 +26,23 @@
             <canvas id="gameArea">
             </canvas>
             
-            <div id="start">
+            <div id="overlay">
+                <table>
+                    <tr>
+                        <td>Select day: </td>
+                        <td><select id="daySelection"></select></td>
+                    </tr>
+                </table>
                 <b id="loading"> ... Loading data ... </b>
-                <button id="startButton" onclick="setUpGame()" style="display: none">Start</button>
-            </div>
-            
-            <div id="gameOver" style="display: none">
-                <div>
+                <button id="startButton" onclick="start()" style="display: none">Start</button>
+                <div id="gameOver" style="display: none">
                     <b>Game Over!</b> <br>
-                    <button onclick="setUpGame()">Restart</button>
+                    <button onclick="start()">Restart</button>
                 </div>
             </div>
         </div>    
         <script src="js/data.js"></script>
         <script src="js/game.js"></script>
+        <script src="js/index.js"></script>
     </body>
 </html>
