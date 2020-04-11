@@ -33,9 +33,15 @@
                         <td><select id="daySelection"></select></td>
                     </tr>
                 </table>
+                
                 <b id="loading"> ... Loading data ... </b>
-                <button id="startButton" onclick="start()" style="display: none">Start</button>
-                <div id="gameOver" style="display: none">
+                
+                <div id="start">
+                    <b id="winMessage"> You reached the end. <br> Check back tomorrow for the next day. </b>
+                    <button id="startButton" onclick="start()">Start</button>
+                </div>
+                
+                <div id="gameOver">
                     <b>Game Over!</b> <br>
                     <button onclick="start()">Restart</button>
                 </div>

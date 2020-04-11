@@ -18,6 +18,7 @@ h1{
 
 #content {
     display: grid;
+    position: relative;
 }
 
 
@@ -54,26 +55,34 @@ h1{
     height: 722px;
 }
 
+
+#start, #gameOver, #loading {
+    position: absolute;
+    text-align: center;
+    color: black;
+    width: 40%;
+    top: 30%;
+    margin-left: 31%;
+    margin-right: 29%;
+}
+
 #startButton{
+    display: none;
     background-color: #f44336;
     border-radius: 8px;
     border: none;
-    position: relative;
     font-size: 20px;
-    left: 50%;
-    top: 50%;
+    margin: 0 auto;
 }
 
-#loading {
-    position: relative;
-    left: 50%;
-    top: 50%;
-    color: red;
+#winMessage {
+    display: none;
+    margin: 0 auto;
 }
 
 #overlay table {
     font-size: 22px;
-    position: relative;
+    position: absolute;
     top: 20%;
     color: black;
 }
@@ -81,12 +90,8 @@ h1{
 
 
 
-
 #gameOver {
-    color: black;
-    position: relative;
-    left: 50%;
-    top: 50%;
+    display: none;
 }
 
 #gameOver b {
@@ -97,6 +102,6 @@ h1{
     background-color: #f44336;
     border-radius: 8px;
     border: none;
-    position: relative;
     font-size: 20px;
+    margin: 0 auto;
 }

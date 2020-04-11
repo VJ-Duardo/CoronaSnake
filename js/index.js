@@ -16,6 +16,7 @@ var overlay = document.getElementById("overlay");
 var startButton = document.getElementById("startButton");
 var loadingMessage = document.getElementById("loading");
 var gameOverScreen = document.getElementById("gameOver");
+var winMessage = document.getElementById("winMessage");
 
 var daySelection = document.getElementById("daySelection");
 
@@ -51,6 +52,7 @@ function start(){
 function setUpGUI(){
     context.clearRect(0, 0, gameArea.width, gameArea.height);
     startButton.style.display = "none";
+    winMessage.style.display = "none";
     overlay.style.display = "none";
     gameOverScreen.style.display = "none";
     caseDisplay.innerHTML = 0;
@@ -63,6 +65,12 @@ var showGameOver = function(){
     overlay.style.display = "block";
     gameOverScreen.style.display = "block";
 };
+
+var showGameWon = function(){
+    overlay.style.display = "block";
+    startButton.style.display = "block";
+    winMessage.style.display = "block";
+}
 
 var setDate = function(day){
     dayDisplay.innerHTML = day;
@@ -94,4 +102,4 @@ var clearRectCell = function(x, y, width, height){
     context.clearRect(x, y, width, height);
 };
 
-setGUIInterfaces(showGameOver, setDate, addCases, setCases, drawCircle, drawRect, clearRectCell);
+setGUIInterfaces(showGameOver, setDate, addCases, setCases, drawCircle, drawRect, clearRectCell, showGameWon);

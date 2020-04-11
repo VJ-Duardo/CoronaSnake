@@ -117,7 +117,7 @@ class Snake{
 
 
 class GUI{
-    constructor(showGameOver, setDate, addCases, setCases, drawCircle, drawRect, clearRectCell){
+    constructor(showGameOver, setDate, addCases, setCases, drawCircle, drawRect, clearRectCell, showGameWon){
         this.showGameOver = showGameOver;
         this.setDate = setDate;
         this.addCases = addCases;
@@ -125,6 +125,7 @@ class GUI{
         this.drawCircle = drawCircle;
         this.drawRect = drawRect;
         this.clearRectCell = clearRectCell;
+        this.showGameWon = showGameWon;
     }
 }
 
@@ -222,6 +223,7 @@ function setUpRound(){
     if (currentDayIndex >= dates.length){
         console.log("you won");
         clearInterval(updateInterval);
+        gui.showGameWon();
         return;
     }
     if (currentDayIndex === 0){
@@ -263,6 +265,6 @@ function setUpGame(width, height, dayIndex, dateStrings){
 }
 
 
-function setGUIInterfaces(showGameOver, setDate, addCases, setCases, drawCircle, drawRect, clearRectCell){
-   gui = new GUI(showGameOver, setDate, addCases, setCases, drawCircle, drawRect, clearRectCell);
+function setGUIInterfaces(showGameOver, setDate, addCases, setCases, drawCircle, drawRect, clearRectCell, showGameWon){
+   gui = new GUI(showGameOver, setDate, addCases, setCases, drawCircle, drawRect, clearRectCell, showGameWon);
 }
