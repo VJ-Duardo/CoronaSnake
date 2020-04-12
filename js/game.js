@@ -22,15 +22,10 @@ class Cell{
         this.width = width;
         this.height = height;
         this.color = color;
-        this.colorCell(this.color);
     }
     
-    colorCell(color){
-        gui.drawRect(this.x, this.y, this.width, this.height, color);
-    }
-    
-    clearCell(){
-        gui.clearRectCell(this.x, this.y, this.width, this.height);
+    drawCell(){
+        gui.drawRect(this.x, this.y, this.width, this.height, this.color);
     }
 }
 
@@ -41,10 +36,11 @@ class Apple extends Cell{
         this.points = points;
     }
     
-    hitApple(x, y){
-        if (this.x === x && this.y === y){
+    hitApple(cellsArray){
+        let hitCell = cellsArray.find((cell) => cell.x === this.x && cell.y === this.y);
+        if (typeof hitCell !== 'undefined'){
             gui.addCases(this.points);
-            delete apples[[x, y]];
+            delete apples[[hitCell.x, hitCell.y]];
             delete this;
             return true;
         } else {
@@ -52,8 +48,8 @@ class Apple extends Cell{
         }
     }
     
-    colorCell(color){
-         gui.drawCircle(this.x+(elemWidth/2), this.y+(elemHeight/2), Math.floor(this.width/2), color);
+    drawCell(){
+         gui.drawCircle(this.x+(elemWidth/2), this.y+(elemHeight/2), Math.floor(this.width/2), this.color);
     }
 }
 
@@ -71,6 +67,12 @@ class Snake{
         
         this.head = new Cell(fieldWidth/2, fieldHeight/2, elemWidth, elemHeight, this.headColor);
         this.body = [this.head];       
+    }
+    
+    drawSnake(){
+        for (const cell of this.body){
+            cell.drawCell();
+        }
     }
     
     getNextColor(){
@@ -92,14 +94,13 @@ class Snake{
     }
     
     insertNewHead(x, y){
-        this.head.colorCell(this.getNextColor());
+        this.head.color = this.getNextColor();
         let newHead = new Cell(x, y, elemWidth, elemHeight, this.headColor);
         this.head = newHead;
         this.body.unshift(newHead);
     }
     
     popTail(){
-        this.body[this.body.length-1].clearCell();
         delete this.body[this.body.length-1];
         this.body.pop();
     }
@@ -117,14 +118,14 @@ class Snake{
 
 
 class GUI{
-    constructor(showGameOver, setDate, addCases, setCases, drawCircle, drawRect, clearRectCell, showGameWon){
+    constructor(showGameOver, setDate, addCases, setCases, drawCircle, drawRect, clearField, showGameWon){
         this.showGameOver = showGameOver;
         this.setDate = setDate;
         this.addCases = addCases;
         this.setCases = setCases;
         this.drawCircle = drawCircle;
         this.drawRect = drawRect;
-        this.clearRectCell = clearRectCell;
+        this.clearField = clearField;
         this.showGameWon = showGameWon;
     }
 }
@@ -185,21 +186,25 @@ function update(){
        return;
     }
     
+    gui.clearField(0, 0, fieldWidth, fieldHeight);
+    
     if (Object.values(apples).length <= 0){
         setUpRound();
     }
     
     let found = false;
     for (let apple of Object.values(apples)){
-        for (let bodyPart of snake.body){
-            if (apple.hitApple(bodyPart.x, bodyPart.y)){
-                found = true;
-            }
+        if (apple.hitApple(snake.body)){
+            found = true;
+        } else {
+            apple.drawCell();
         }
     }
     
     if (!found)
         snake.popTail();
+    
+    snake.drawSnake();
 }
 
 
@@ -221,7 +226,6 @@ function createCasePoints(lat, long, cases){
 
 function setUpRound(){
     if (currentDayIndex >= dates.length){
-        console.log("you won");
         clearInterval(updateInterval);
         gui.showGameWon();
         return;
@@ -265,6 +269,6 @@ function setUpGame(width, height, dayIndex, dateStrings){
 }
 
 
-function setGUIInterfaces(showGameOver, setDate, addCases, setCases, drawCircle, drawRect, clearRectCell, showGameWon){
-   gui = new GUI(showGameOver, setDate, addCases, setCases, drawCircle, drawRect, clearRectCell, showGameWon);
+function setGUIInterfaces(showGameOver, setDate, addCases, setCases, drawCircle, drawRect, clearField, showGameWon){
+   gui = new GUI(showGameOver, setDate, addCases, setCases, drawCircle, drawRect, clearField, showGameWon);
 }

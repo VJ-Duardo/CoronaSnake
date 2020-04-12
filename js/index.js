@@ -82,7 +82,7 @@ var addCases = function(cases){
 
 var setCases = function(cases){
     caseDisplay.innerHTML = cases;
-}
+};
 
 var drawCircle = function(x, y, r, color){
     context.beginPath();
