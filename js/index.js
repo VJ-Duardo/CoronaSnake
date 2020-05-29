@@ -24,8 +24,8 @@ var dateStrings;
 
 
 
-document.addEventListener("keyup", function(event) {
-    processInput(event.keyCode);
+document.addEventListener("keydown", function(event) {
+    processInput(event.key);
 });
 
 

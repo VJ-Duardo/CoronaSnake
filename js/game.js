@@ -139,19 +139,19 @@ function processInput(keyCode){
     
     turnDone = true;
     switch(keyCode){
-        case 37:
+        case "ArrowLeft":
             if (snake.direction !== "east")
                 snake.direction = "west";
             break;
-        case 38:
+        case "ArrowUp":
             if (snake.direction !== "south")
                 snake.direction = "north";
             break;
-        case 39:
+        case "ArrowRight":
             if (snake.direction !== "west")
                 snake.direction = "east";
             break;
-        case 40:
+        case "ArrowDown":
             if (snake.direction !== "north")
                 snake.direction = "south";
             break;
