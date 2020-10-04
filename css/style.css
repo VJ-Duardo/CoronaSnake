@@ -34,7 +34,8 @@ h1{
     z-index: 1;
     border: 1px solid #000000;
     background: url('../earth2.png');
-    background-size: 1440px 720px;
+    background-size: cover;
+    width: 75%;
 }
 
 
@@ -51,8 +52,7 @@ h1{
     position: relative;
     z-index: 3;
     background: rgba(230,230,230,0.3);
-    width: 1442px;
-    height: 722px;
+    width: 75%;
 }
 
 
